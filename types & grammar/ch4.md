@@ -34,23 +34,23 @@ var c = String( a );	// внешнее приведение
 
 Для переменной `b`, приведение будет неявным, внутренним, потому что сочетание оператора `+` с операндом в виде строкового литерала `string` (`""`) сповоцирует операцю конкатенации строк, что, в свою очередь, *как (скрытый) побочный эффект*, приведет числовое значение `42` переменной `a` к его строковому эквиваленту: `"42"`.
 
-By contrast, the `String(..)` function makes it pretty obvious that it's explicitly taking the value in `a` and coercing it to a `string` representation.
+С другой стороны, функция `String(..)` довольно явно берет значение переменной `a` и приводит его к строковому `string` представлению.
 
-Both approaches accomplish the same effect: `"42"` comes from `42`. But it's the *how* that is at the heart of the heated debates over JavaScript coercion.
+Оба подхода пришли к одному результату: значение `"42"` преобразовано в `42`. Но, то *как* это произошло и есть причина всех этих холиваров вокруг приведения типов в JavaScript.
 
-**Note:** Technically, there's some nuanced behavioral difference here beyond the stylistic difference. We cover that in more detail later in the chapter, in the "Implicitly: Strings <--> Numbers" section.
+**Примечание:** Технически, помимо внешней разницы в этих двух подходах, есть несколько ньюансов поведения. Более детально они будут расмотрены в следующей главе, в разделе "Неявное преобразование: Strings <--> Numbers".
 
-The terms "explicit" and "implicit," or "obvious" and "hidden side effect," are *relative*.
+Термины "явное" и "неявное," или "очевидное" и "скрытый побочный эффект," являются *относительными*.
 
-If you know exactly what `a + ""` is doing and you're intentionally doing that to coerce to a `string`, you might feel the operation is sufficiently "explicit." Conversely, if you've never seen the `String(..)` function used for `string` coercion, its behavior might seem hidden enough as to feel "implicit" to you.
+Если вы точно знаете что делает `a + ""` и вы намеренно делаете это для преобразования в строку `string`, вы  скорее всего почувствуете что преобразование "явное." С другой стороны, если вы не видите функцию `String(..)` используемую для приведения в `string`, такое поведение может показаться достаточно "неявным".
 
-But we're having this discussion of "explicit" vs. "implicit" based on the likely opinions of an *average, reasonably informed, but not expert or JS specification devotee* developer. To whatever extent you do or do not find yourself fitting neatly in that bucket, you will need to adjust your perspective on our observations here accordingly.
+Но, наше обсуждение о том, что "явное", а что "неявное" должно быть основано на мнении большинства *средних, вполне информированных, но не экспертов спецификаций JS* разработчиков. Неважно входите ли вы в число среднестатистичеких разработчиков, нужно привести свои взгляды в соответствие с позицией большинства разработчиков.
 
-Just remember: it's often rare that we write our code and are the only ones who ever read it. Even if you're an expert on all the ins and outs of JS, consider how a less experienced teammate of yours will feel when they read your code. Will it be "explicit" or "implicit" to them in the same way it is for you?
+Просто помните: довольно редко вы пишете код, который прочтете только вы. Даже если вы вдоль и поперек знаете JS, подумайте о том, как почуствуют себя ваши менее опытные товарищи, читая ваш код. Будет ли "явное" или "неявное" для них тем же,что и для вас?
 
-## Abstract Value Operations
+## Абстрактные операции со значениями
 
-Before we can explore *explicit* vs *implicit* coercion, we need to learn the basic rules that govern how values *become* either a `string`, `number`, or `boolean`. The ES5 spec in section 9 defines several "abstract operations" (fancy spec-speak for "internal-only operation") with the rules of value conversion. We will specifically pay attention to: `ToString`, `ToNumber`, and `ToBoolean`, and to a lesser extent, `ToPrimitive`.
+Прежде чем мы рассмотрим *явное* и *неявное* приведение, мы должны разобраться с основными правилами,которые регулируют как значения *становятся* строками `string`, числами `number`, или `boolean`. Раздел 9 Спецификации ES5 определяет несколько "абстрактных операций" (модное словечко из спецификации для "внутренних операций") с правилами преобразования значений. Больше посмотрим на: `ToString`, `ToNumber`, и `ToBoolean`, ну, и немного на: `ToPrimitive`.
 
 ### `ToString`
 
