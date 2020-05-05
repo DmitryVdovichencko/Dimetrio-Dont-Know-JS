@@ -54,21 +54,21 @@ var c = String( a );	// внешнее приведение
 
 ### `ToString`
 
-When any non-`string` value is coerced to a `string` representation, the conversion is handled by the `ToString` abstract operation in section 9.8 of the specification.
+Когда любое нестроковое `non-string` значение преобразуется в строковое `string` представление, преобразование проводит абстрактный оператор `ToString` раздела 9.8 спецификации.
 
-Built-in primitive values have natural stringification: `null` becomes `"null"`, `undefined` becomes `"undefined"` and `true` becomes `"true"`. `number`s are generally expressed in the natural way you'd expect, but as we discussed in Chapter 2, very small or very large `numbers` are represented in exponent form:
+Встроенные примтивные значения подчиняются следующим правилам преобразования в строку: `null` становится `"null"`, `undefined` становится `"undefined"` и `true` становится `"true"`. Числа `number`в большинстве случаев отобразятся в том виде, в котором их ожидают,но слишком маленькие или слишком большие числа `numbers` будут представлены в экспоненциальной форме:
 
 ```js
-// multiplying `1.07` by `1000`, seven times over
+// умножим `1.07` на `1000` 7 раз
 var a = 1.07 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
 
-// seven times three digits => 21 digits
+// 7 раз по 3 цифры => 21 цифра
 a.toString(); // "1.07e21"
 ```
 
-For regular objects, unless you specify your own, the default `toString()` (located in `Object.prototype.toString()`) will return the *internal `[[Class]]`* (see Chapter 3), like for instance `"[object Object]"`.
+Для обычных объектов, если вы не определили что-то свое, стандартный метод `toString()` (расположенный в `Object.prototype.toString()`) вернет *внутренний `[[Class]]`* (см раздел 3), например `"[object Object]"`.
 
-But as shown earlier, if an object has its own `toString()` method on it, and you use that object in a `string`-like way, its `toString()` will automatically be called, and the `string` result of that call will be used instead.
+Но как, if an object has its own `toString()` method on it, and you use that object in a `string`-like way, its `toString()` will automatically be called, and the `string` result of that call will be used instead.
 
 **Note:** The way an object is coerced to a `string` technically goes through the `ToPrimitive` abstract operation (ES5 spec, section 9.1), but those nuanced details are covered in more detail in the `ToNumber` section later in this chapter, so we will skip over them here.
 
