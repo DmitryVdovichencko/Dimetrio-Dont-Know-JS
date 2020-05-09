@@ -68,11 +68,11 @@ a.toString(); // "1.07e21"
 
 Для обычных объектов, если вы не определили что-то свое, стандартный метод `toString()` (расположенный в `Object.prototype.toString()`) вернет *внутренний `[[Class]]`* (см раздел 3), например `"[object Object]"`.
 
-Но как, if an object has its own `toString()` method on it, and you use that object in a `string`-like way, its `toString()` will automatically be called, and the `string` result of that call will be used instead.
+Но если у объекта есть свой собственный метод`toString()`и вы пытаетесь использовать объект как строку `string`,его метод `toString()` будет вызван автоматически, и в результате мы получим строку`string` из выова этого метода.
 
-**Note:** The way an object is coerced to a `string` technically goes through the `ToPrimitive` abstract operation (ES5 spec, section 9.1), but those nuanced details are covered in more detail in the `ToNumber` section later in this chapter, so we will skip over them here.
+**Примечание:** Способ, которым объект приводятся к строке `string` технически реализован с использованием абстрактного оператора `ToPrimitive` (спецификация ES5, раздел 9.1), об этих ньюансах будет более подробно рассказано в части `ToNumber` этого раздела, так что пока мы и пропустим.
 
-Arrays have an overridden default `toString()` that stringifies as the (string) concatenation of all its values (each stringified themselves), with `","` in between each value:
+У массивов есть свой метод`toString()`, который преобразует массив в строку, конкатенируя все его значения, разделяя их запятой`","`:
 
 ```js
 var a = [1,2,3];
@@ -80,15 +80,15 @@ var a = [1,2,3];
 a.toString(); // "1,2,3"
 ```
 
-Again, `toString()` can either be called explicitly, or it will automatically be called if a non-`string` is used in a `string` context.
+Еще раз, `toString()` может быть вызван явно, или автоматически - в тех случаях, когда нестроковое значение используется в качестве строки.
 
-#### JSON Stringification
+#### JSON Стрингификация
 
-Another task that seems awfully related to `ToString` is when you use the `JSON.stringify(..)` utility to serialize a value to a JSON-compatible `string` value.
+Другая задача которая касается `ToString` это ипользование метода `JSON.stringify(..)` для сериализации значения в JSON-совместимое строковое значение.
 
-It's important to note that this stringification is not exactly the same thing as coercion. But since it's related to the `ToString` rules above, we'll take a slight diversion to cover JSON stringification behaviors here.
+Важно подметить, что стрингиикация и приведение не одно и то же. Но раз уж т касается закономеностей `ToString`,о которых говорилось выше, мы немного отвлечемся чтобы рассказать о поведении стрингификации JSON здесь.
 
-For most simple values, JSON stringification behaves basically the same as `toString()` conversions, except that the serialization result is *always a `string`*:
+Для большинства простых значений, стрингификация JSON основана на преобразовании `toString()`, исключая тот факт результатом сериализации *всегда будет строка `string`*:
 
 ```js
 JSON.stringify( 42 );	// "42"
