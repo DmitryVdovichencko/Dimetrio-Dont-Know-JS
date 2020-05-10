@@ -92,18 +92,18 @@ a.toString(); // "1,2,3"
 
 ```js
 JSON.stringify( 42 );	// "42"
-JSON.stringify( "42" );	// ""42"" (a string with a quoted string value in it)
+JSON.stringify( "42" );	// ""42"" (строковое значение обернуто в строки)
 JSON.stringify( null );	// "null"
 JSON.stringify( true );	// "true"
 ```
 
-Any *JSON-safe* value can be stringified by `JSON.stringify(..)`. But what is *JSON-safe*? Any value that can be represented validly in a JSON representation.
+Любое *JSON-безопасное* значение может быть преобразовано в строку `JSON.stringify(..)`. Но что значит *JSON-безопасное*? Любое значение которое моет быть корректно представлено в виде JSON.
 
-It may be easier to consider values that are **not** JSON-safe. Some examples: `undefined`s, `function`s, (ES6+) `symbol`s, and `object`s with circular references (where property references in an object structure create a never-ending cycle through each other). These are all illegal values for a standard JSON structure, mostly because they aren't portable to other languages that consume JSON values.
+Проще рассмотреть те значения которые **не** яаляются JSON-безопасными. Несколько примеров: `undefined`, `function`, (ES6+) `symbol`, и объекты `object`с циклическими ссылками (свойство указанное в структуре объекта создает бесконечный цикл). Это - некорректные знчения для структуры JSON, в основном, потому что они не поддерживаются другими языками которые работают с JSON.
 
-The `JSON.stringify(..)` utility will automatically omit `undefined`, `function`, and `symbol` values when it comes across them. If such a value is found in an `array`, that value is replaced by `null` (so that the array position information isn't altered). If found as a property of an `object`, that property will simply be excluded.
+Метод `JSON.stringify(..)` автоматически преобразует `undefined`, `function`, и `symbol`. Если такие значения встречаются в массиве `array`, значение будет заменено на `null` (так что индексы остальных ячеек массива не изменятся). Если эти значения встретятся в свойстве объекта `object`, свойство будет исключено.
 
-Consider:
+Например:
 
 ```js
 JSON.stringify( undefined );					// undefined
@@ -113,9 +113,9 @@ JSON.stringify( [1,undefined,function(){},4] );	// "[1,null,null,4]"
 JSON.stringify( { a:2, b:function(){} } );		// "{"a":2}"
 ```
 
-But if you try to `JSON.stringify(..)` an `object` with circular reference(s) in it, an error will be thrown.
+Но, если попытаться применить `JSON.stringify(..)` к объекту `object` с циклическими ссылками внутри, возникнет ошибка.
 
-JSON stringification has the special behavior that if an `object` value has a `toJSON()` method defined, this method will be called first to get a value to use for serialization.
+JSON стрингификация ведет себя по другому, если у объекта `object` есть метод `toJSON()` , этод метод будет приоритетнм для сериализации.
 
 If you intend to JSON stringify an object that may contain illegal JSON value(s), or if you just have values in the `object` that aren't appropriate for the serialization, you should define a `toJSON()` method for it that returns a *JSON-safe* version of the `object`.
 
