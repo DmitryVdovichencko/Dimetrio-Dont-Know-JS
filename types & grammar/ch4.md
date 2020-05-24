@@ -99,7 +99,7 @@ JSON.stringify( true );	// "true"
 
 Любое *JSON-безопасное* значение может быть преобразовано в строку `JSON.stringify(..)`. Но что значит *JSON-безопасное*? Любое значение которое моет быть корректно представлено в виде JSON.
 
-Проще рассмотреть те значения которые **не** яаляются JSON-безопасными. Несколько примеров: `undefined`, `function`, (ES6+) `symbol`, и объекты `object`с циклическими ссылками (свойство указанное в структуре объекта создает бесконечный цикл). Это - некорректные знчения для структуры JSON, в основном, потому что они не поддерживаются другими языками которые работают с JSON.
+Проще рассмотреть те значения, которые **не** яаляются JSON-безопасными. Несколько примеров: `undefined`, `function`, (ES6+) `symbol`, и объекты `object`с циклическими ссылками (свойство указанное в структуре объекта создает бесконечный цикл). Это - некорректные знчения для структуры JSON, в основном, потому что они не поддерживаются другими языками которые работают с JSON.
 
 Метод `JSON.stringify(..)` автоматически преобразует `undefined`, `function`, и `symbol`. Если такие значения встречаются в массиве `array`, значение будет заменено на `null` (так что индексы остальных ячеек массива не изменятся). Если эти значения встретятся в свойстве объекта `object`, свойство будет исключено.
 
@@ -115,11 +115,11 @@ JSON.stringify( { a:2, b:function(){} } );		// "{"a":2}"
 
 Но, если попытаться применить `JSON.stringify(..)` к объекту `object` с циклическими ссылками внутри, возникнет ошибка.
 
-JSON стрингификация ведет себя по другому, если у объекта `object` есть метод `toJSON()` , этод метод будет приоритетнм для сериализации.
+JSON стрингификация ведет себя по другому, если у объекта `object` есть метод `toJSON()`, этод метод будет приоритетным для сериализации.
 
-If you intend to JSON stringify an object that may contain illegal JSON value(s), or if you just have values in the `object` that aren't appropriate for the serialization, you should define a `toJSON()` method for it that returns a *JSON-safe* version of the `object`.
+Если вы намрены применить `JSON.stringify()` к объекту, который содержит некорректные JSON или непригодные для сериализации значения, следует определить метод `toJSON()` который вернет безопаную JSON версию объекта.
 
-For example:
+Например:
 
 ```js
 var o = { };
@@ -130,32 +130,32 @@ var a = {
 	d: function(){}
 };
 
-// create a circular reference inside `a`
+// создаем циклическую ссылку внутри `a` на самого себя
 o.e = a;
 
-// would throw an error on the circular reference
+// При вызове метода сработает ошибка 
 // JSON.stringify( a );
 
-// define a custom JSON value serialization
+// Определяем кастомную JSON сериализацию
 a.toJSON = function() {
-	// only include the `b` property for serialization
+	// включаем только свойство `b` для сериализации
 	return { b: this.b };
 };
 
 JSON.stringify( a ); // "{"b":42}"
 ```
 
-It's a very common misconception that `toJSON()` should return a JSON stringification representation. That's probably incorrect, unless you're wanting to actually stringify the `string` itself (usually not!). `toJSON()` should return the actual regular value (of whatever type) that's appropriate, and `JSON.stringify(..)` itself will handle the stringification.
+Есть распространенное заблуждение,что метод `toJSON()` должен вернуть строковое представление JSON. Обычно это не так, если только вы не хотите стрингифицировать саму строку  `string`. `toJSON()` должен возвращать действующее значение (любого типа) приемлемое для JSON, а `JSON.stringify(..)`сам выполнит стригификацию.
 
-In other words, `toJSON()` should be interpreted as "to a JSON-safe value suitable for stringification," not "to a JSON string" as many developers mistakenly assume.
+Другими словами, `toJSON()` можно представить как "метод приведения к JSON-безопасным значениям подходящим для стрингификаци" а не "метод приведения к JSON string", как предполагают многие разработчики.
 
-Consider:
+Рассмотрим:
 
 ```js
 var a = {
 	val: [1,2,3],
 
-	// probably correct!
+	// корректная реализация!
 	toJSON: function(){
 		return this.val.slice( 1 );
 	}
@@ -164,7 +164,7 @@ var a = {
 var b = {
 	val: [1,2,3],
 
-	// probably incorrect!
+	// некорректная реализация!
 	toJSON: function(){
 		return "[" +
 			this.val.slice( 1 ).join() +
@@ -177,15 +177,15 @@ JSON.stringify( a ); // "[2,3]"
 JSON.stringify( b ); // ""[2,3]""
 ```
 
-In the second call, we stringified the returned `string` rather than the `array` itself, which was probably not what we wanted to do.
+Во втором вызове, мы стрингифицируем строку `string` а не сам массив `array`, а это совсем не то, чего мы ожидали.
 
-While we're talking about `JSON.stringify(..)`, let's discuss some lesser-known functionalities that can still be very useful.
+Раз уж мы говорим о `JSON.stringify(..)`, можно обсудить малоизвестный функционал, который, те не менее, может быть полезен.
 
-An optional second argument can be passed to `JSON.stringify(..)` that is called *replacer*. This argument can either be an `array` or a `function`. It's used to customize the recursive serialization of an `object` by providing a filtering mechanism for which properties should and should not be included, in a similar way to how `toJSON()` can prepare a value for serialization.
+Опционально, методу `JSON.stringify(..)` может быть передан второй аргумент: *replacer*. Этот аргумент может быть массивом `array` или функцией `function`. Он используется для настройки рекурсивной сериализации объекта `object` поддерживая механизм фильтрации для свойств, которые должны быть добавлены или исключены, в том же ключе как метод `toJSON()` готовит значения для сериализации.
 
-If *replacer* is an `array`, it should be an `array` of `string`s, each of which will specify a property name that is allowed to be included in the serialization of the `object`. If a property exists that isn't in this list, it will be skipped.
+Если *replacer* является массивом `array`, это должен быть массив `array` строк `string`, каждая из которых является именем свойства разоешенного пи сериализации оъекта`object`. Если свойства не окажется в этом массиве, оно будет пропущено.
 
-If *replacer* is a `function`, it will be called once for the `object` itself, and then once for each property in the `object`, and each time is passed two arguments, *key* and *value*. To skip a *key* in the serialization, return `undefined`. Otherwise, return the *value* provided.
+Если *replacer* является функцией `function`, она должна быть вызвана единожды внутри объекта `object`, и, затем, для каждого свойства объекта `object`, каждый раз ей будут переданы два аргумента, ключ *key* и значение *value*. Для пропуска ключа *key* в сериализации, возвращаем `undefined`. Для поддержки свойства в серализации отдаем значение *value*.
 
 ```js
 var a = {
@@ -202,9 +202,9 @@ JSON.stringify( a, function(k,v){
 // "{"b":42,"d":[1,2,3]}"
 ```
 
-**Note:** In the `function` *replacer* case, the key argument `k` is `undefined` for the first call (where the `a` object itself is being passed in). The `if` statement **filters out** the property named `"c"`. Stringification is recursive, so the `[1,2,3]` array has each of its values (`1`, `2`, and `3`) passed as `v` to *replacer*, with indexes (`0`, `1`, and `2`) as `k`.
+**Примечание:** В случае применения функции `function` как *replacer* ,ключ `k`  -  `undefined` при первом вызове (когда передается сам объект `a`). Конструкция `if` **фильтрует** свойство `"c"`. Стинификация рекурсивна, так что массив `[1,2,3]`имеет каждое из своих значений (`1`, `2`, и `3`), которые передаются как значение `v` функции *replacer*, с индексами (`0`, `1`, и `2`) как ключ `k`.
 
-A third optional argument can also be passed to `JSON.stringify(..)`, called *space*, which is used as indentation for prettier human-friendly output. *space* can be a positive integer to indicate how many space characters should be used at each indentation level. Or, *space* can be a `string`, in which case up to the first ten characters of its value will be used for each indentation level.
+Третий опциональнй арумент который можно передать `JSON.stringify(..)`, называется *space*, используется для форматирования чтобы придать более читаемый вид результатам. *space* может принимать положительные числовые значения, чтобы определить как много пробелов будет на каждом уровне. Или, *space* может быть строкой `string`, в этом случае будут использоваться до 10 первых символов.
 
 ```js
 var a = {
@@ -236,10 +236,10 @@ JSON.stringify( a, null, "-----" );
 // }"
 ```
 
-Remember, `JSON.stringify(..)` is not directly a form of coercion. We covered it here, however, for two reasons that relate its behavior to `ToString` coercion:
+Помните, `JSON.stringify(..)` не является "прямо" приведением. Мы обсудили его здесь, по 2 причинам, которые делают его поведением похожим на приведение `ToString`:
 
-1. `string`, `number`, `boolean`, and `null` values all stringify for JSON basically the same as how they coerce to `string` values via the rules of the `ToString` abstract operation.
-2. If you pass an `object` value to `JSON.stringify(..)`, and that `object` has a `toJSON()` method on it, `toJSON()` is automatically called to (sort of) "coerce" the value to be *JSON-safe* before stringification.
+1. Значения`string`, `number`, `boolean`, и `null` стрингифицируются для JSON в осоовном также, как приводятся к строке `string` по правилам абстрактного оператора `ToString`.
+2. Если передать объект `object` методу `JSON.stringify(..)`, и этот объект `object` имеет свой метод `toJSON()`, `toJSON()` автоматически вызывается для ("типа") "приведения" к *JSON-безопасному* значению перед стрингификацией.
 
 ### `ToNumber`
 
