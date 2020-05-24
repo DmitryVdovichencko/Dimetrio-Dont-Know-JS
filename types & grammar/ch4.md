@@ -243,11 +243,11 @@ JSON.stringify( a, null, "-----" );
 
 ### `ToNumber`
 
-If any non-`number` value is used in a way that requires it to be a `number`, such as a mathematical operation, the ES5 spec defines the `ToNumber` abstract operation in section 9.3.
+Если любое нечисловое значение используется в числовом контексте, где требуется чтбы значение имело тип `number`, например при математических операциях, спецификация ES5 определяет абстрактный оператор `ToNumber` в разделе 9.3.
 
-For example, `true` becomes `1` and `false` becomes `0`. `undefined` becomes `NaN`, but (curiously) `null` becomes `0`.
+Например, `true` становится `1` а `false` становятся `0`. `undefined` становится `NaN`, но (что интересно) `null` становится `0`.
 
-`ToNumber` for a `string` value essentially works for the most part like the rules/syntax for numeric literals (see Chapter 3). If it fails, the result is `NaN` (instead of a syntax error as with `number` literals). One example difference is that `0`-prefixed octal numbers are not handled as octals (just as normal base-10 decimals) in this operation, though such octals are valid as `number` literals (see Chapter 2).
+`ToNumber` для строки `string` работает по тем же правилам что для числовых литералов. Если происходит ошибка, резултатом будет `NaN` (в отличие от ошибки синтаксиса как в лучае с числовыми литералами `number`). Один пример различия в том, что восьмеричные числа с 0 префиксами не поддерживаются как восьмеричные (только как обычные десятичные дроби) при применении этого метода, так что такие восьмеричные числа будут корректны как чиловые литералы `number`.
 
 **Note:** The differences between `number` literal grammar and `ToNumber` on a `string` value are subtle and highly nuanced, and thus will not be covered further here. Consult section 9.3.1 of the ES5 spec for more information.
 
