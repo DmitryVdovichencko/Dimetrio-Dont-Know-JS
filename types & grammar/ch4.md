@@ -117,7 +117,7 @@ JSON.stringify( { a:2, b:function(){} } );		// "{"a":2}"
 
 JSON стрингификация ведет себя по другому, если у объекта `object` есть метод `toJSON()`, этод метод будет приоритетным для сериализации.
 
-Если вы намрены применить `JSON.stringify()` к объекту, который содержит некорректные JSON или непригодные для сериализации значения, следует определить метод `toJSON()` который вернет безопаную JSON версию объекта.
+Если вы намерены применить `JSON.stringify()` к объекту, который содержит некорректные JSON или непригодные для сериализации значения, следует определить метод `toJSON()` который вернет безопаную JSON версию объекта.
 
 Например:
 
@@ -249,15 +249,15 @@ JSON.stringify( a, null, "-----" );
 
 `ToNumber` для строки `string` работает по тем же правилам что для числовых литералов. Если происходит ошибка, резултатом будет `NaN` (в отличие от ошибки синтаксиса как в лучае с числовыми литералами `number`). Один пример различия в том, что восьмеричные числа с 0 префиксами не поддерживаются как восьмеричные (только как обычные десятичные дроби) при применении этого метода, так что такие восьмеричные числа будут корректны как чиловые литералы `number`.
 
-**Note:** The differences between `number` literal grammar and `ToNumber` on a `string` value are subtle and highly nuanced, and thus will not be covered further here. Consult section 9.3.1 of the ES5 spec for more information.
+**Примечание:** Различия между чиловыми литералами `number` и применененным методом `ToNumber`к строковому значению `string` очень незначительны и касаются нюансов, так что, здесь они рассматриваться не будут. Смотретите раздел 9.3.1 спецификации ES5 для получения более подробной информации.
 
-Objects (and arrays) will first be converted to their primitive value equivalent, and the resulting value (if a primitive but not already a `number`) is coerced to a `number` according to the `ToNumber` rules just mentioned.
+Объекты (и массивы) сначала будут преобразованы к своему примитивному эквиваленту, и итоговое значение (если только примитив уже не является числом `number`) приводится к  `number` согласно правилам работы `ToNumber`, упомянутым выше.
 
-To convert to this primitive value equivalent, the `ToPrimitive` abstract operation (ES5 spec, section 9.1) will consult the value (using the internal `DefaultValue` operation -- ES5 spec, section 8.12.8) in question to see if it has a `valueOf()` method. If `valueOf()` is available and it returns a primitive value, *that* value is used for the coercion. If not, but `toString()` is available, it will provide the value for the coercion.
+Для преобразования к примитивному значению, абстрактный оператор `ToPrimitive` (спецификация ES5, раздел 9.1) проверит значение (используя внутренний метод `DefaultValue` -- спецификация ES5, раздел 8.12.8) на присутствие метода `valueOf()`. Если `valueOf()` доступен и возвращает примитивное значение, *это* значение используется для приведения. Если нет, но доступен `toString()`, он предоставит значение для приведения.
 
-If neither operation can provide a primitive value, a `TypeError` is thrown.
+Если никто не вернет примитивное значение, сработает ошибка `TypeError`.
 
-As of ES5, you can create such a noncoercible object -- one without `valueOf()` and `toString()` -- if it has a `null` value for its `[[Prototype]]`, typically created with `Object.create(null)`. See the *this & Object Prototypes* title of this series for more information on `[[Prototype]]`s.
+Так, в ES5, можно создать неприводимый объект -- такой, у котрого нет `valueOf()` и `toString()` -- и если у него указано значение `null` для его прототипа `[[Prototype]]`, обычно созданного с помощью `Object.create(null)`. Смотрите книгу *this & Object Prototypes* этой серии для более подробной информации о прототипах `[[Prototype]]`.
 
 **Note:** We cover how to coerce to `number`s later in this chapter in detail, but for this next code snippet, just assume the `Number(..)` function does so.
 
