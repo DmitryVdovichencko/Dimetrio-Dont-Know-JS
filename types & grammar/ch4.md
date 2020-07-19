@@ -259,23 +259,24 @@ JSON.stringify( a, null, "-----" );
 
 Так, в ES5, можно создать неприводимый объект -- такой, у котрого нет `valueOf()` и `toString()` -- и если у него указано значение `null` для его прототипа `[[Prototype]]`, обычно созданного с помощью `Object.create(null)`. Смотрите книгу *this & Object Prototypes* этой серии для более подробной информации о прототипах `[[Prototype]]`.
 
-**Note:** We cover how to coerce to `number`s later in this chapter in detail, but for this next code snippet, just assume the `Number(..)` function does so.
+**Примечание:** Далее мы более подробно рассмотрим приведение к числу `number`,а для следующего примера, просто будем полагать чо это делает функция  `Number(..)`.
 
-Consider:
-
+Например:
 ```js
+
+// для объекта a объявим метод valueOf 
 var a = {
 	valueOf: function(){
 		return "42";
 	}
 };
-
+// для объекта b объявим метод toString
 var b = {
 	toString: function(){
 		return "42";
 	}
 };
-
+// для массива добавим метод toString который объединяет его элементы
 var c = [4,2];
 c.toString = function(){
 	return this.join( "" );	// "42"
@@ -291,24 +292,24 @@ Number( [ "abc" ] );	// NaN
 
 ### `ToBoolean`
 
-Next, let's have a little chat about how `boolean`s behave in JS. There's **lots of confusion and misconception** floating out there around this topic, so pay close attention!
+Теперь, давайте немного поговорим о том как ведут себя булевые значения`boolean` в JS. Вокруг этй темы есть много **путаницы и заблуждений**, так что, нужно быть особенно внимательными!
 
-First and foremost, JS has actual keywords `true` and `false`, and they behave exactly as you'd expect of `boolean` values. It's a common misconception that the values `1` and `0` are identical to `true`/`false`. While that may be true in other languages, in JS the `number`s are `number`s and the `boolean`s are `boolean`s. You can coerce `1` to `true` (and vice versa) or `0` to `false` (and vice versa). But they're not the same.
+Прежде всего, в JS есть ключевые слова `true` и `false`, и они ведут себя именно так, как вы ожидаете от булевх значений `boolean`. Есть распространенное заблуждение, что значения `1` и `0` идентичны `true`/`false`. Для других языков может так оно и есть, но в JS числа `number`есть числа, а булевые значения `boolean` есть булевые значения. Вы можете привести `1` к `true` (и наоборот) или `0` к `false` (и наоборот). Но они -- не одно и то же.
 
-#### Falsy Values
+#### Значения `false`
 
-But that's not the end of the story. We need to discuss how values other than the two `boolean`s behave whenever you coerce *to* their `boolean` equivalent.
+Но, это не конец историии. Нужно обсудить как значения, отличные от двух булевых `boolean`, поведут себя при приведении *к* их булевому эквиваленту `boolean`.
 
-All of JavaScript's values can be divided into two categories:
+Все значения в JavaScript могут быть разделены на два типа:
 
-1. values that will become `false` if coerced to `boolean`
-2. everything else (which will obviously become `true`)
+1. значения, которые при приведении к булевым дадут  `false`
+2. все остальные (которые, очевидно дадут `true`)
 
-I'm not just being facetious. The JS spec defines a specific, narrow list of values that will coerce to `false` when coerced to a `boolean` value.
+Я не шучу. Спецификация JS дает определенный список значений, которые при приведении к булевым дадут `false`.
 
-How do we know what the list of values is? In the ES5 spec, section 9.2 defines a `ToBoolean` abstract operation, which says exactly what happens for all the possible values when you try to coerce them "to boolean."
+Как мы узнали, что такой список существует? В спецификации ES5, раздел 9.2 определяет абстрактный оператор `ToBoolean`, который абсолютно точно сообщает какое значение вы получите при приведении к булевым.
 
-From that table, we get the following as the so-called "falsy" values list:
+Из этой таблицы мы выбрали так называемые "falsy" значения:
 
 * `undefined`
 * `null`
@@ -316,21 +317,21 @@ From that table, we get the following as the so-called "falsy" values list:
 * `+0`, `-0`, and `NaN`
 * `""`
 
-That's it. If a value is on that list, it's a "falsy" value, and it will coerce to `false` if you force a `boolean` coercion on it.
+И все. Если значение в этом списке, это "falsy" значение, и оно выдаст `false` при приведении к`boolean`.
 
-By logical conclusion, if a value is *not* on that list, it must be on *another list*, which we call the "truthy" values list. But JS doesn't really define a "truthy" list per se. It gives some examples, such as saying explicitly that all objects are truthy, but mostly the spec just implies: **anything not explicitly on the falsy list is therefore truthy.**
+Логичный вывод: если значение *не* в этом списке, оно должно быть в *другом списке*, который мы назовем список значений "truthy".Но, JS, по сути не определяет список "truthy" значений. Есть несколько примеров, где явно говорится что объекты - "truthy", но в основном спецификация говорит о том, что: **все, что не принадлежит списку знчений falsy list является truthy.**
 
-#### Falsy Objects
+#### Объекты Falsy 
 
-Wait a minute, that section title even sounds contradictory. I literally *just said* the spec calls all objects truthy, right? There should be no such thing as a "falsy object."
+Минуточку, заголовок этого раздела звучит противоречиво. Я буквально *только что сказал* что спецификация трактует ве объекты как truthy, верно? Вообще не должно быть такой вещи как "falsy object."
 
-What could that possibly even mean?
+Что это вообще мжет означать?
 
-You might be tempted to think it means an object wrapper (see Chapter 3) around a falsy value (such as `""`, `0` or `false`). But don't fall into that *trap*.
+Вы можете поддаться искушению что это объект обертка (см Раздел 3) для falsy значения (таких как `""`, `0`или `false`). Не попадите в эту *ловушку*.
 
-**Note:** That's a subtle specification joke some of you may get.
+**Примечание:** Это такой тонкий юмор от спецификации JS.
 
-Consider:
+Например:
 
 ```js
 var a = new Boolean( false );
@@ -338,7 +339,7 @@ var b = new Number( 0 );
 var c = new String( "" );
 ```
 
-We know all three values here are objects (see Chapter 3) wrapped around obviously falsy values. But do these objects behave as `true` or as `false`? That's easy to answer:
+Мы знаем что все три значения являются объектами (см Раздел 3) обертками для очевидных falsy значений. Но как эти объекты поведут себя: как `true` или как `false`? Легко проверить:
 
 ```js
 var d = Boolean( a && b && c );
@@ -346,35 +347,35 @@ var d = Boolean( a && b && c );
 d; // true
 ```
 
-So, all three behave as `true`, as that's the only way `d` could end up as `true`.
+Так похоже все три объекта повели себя как `true`,т.к. это единственный случай при котором `d` будет `true`.
 
-**Tip:** Notice the `Boolean( .. )` wrapped around the `a && b && c` expression -- you might wonder why that's there. We'll come back to that later in this chapter, so make a mental note of it. For a sneak-peek (trivia-wise), try for yourself what `d` will be if you just do `d = a && b && c` without the `Boolean( .. )` call!
+**Замечание:** Обратите внимание на метод `Boolean( .. )` для выражения `a && b && c` -- вы, возможно удивились зачем он там. Мы вернемся к этому позже, просто поставим галочку. Для расширения кругозора, попробуйте сами: что выведет `d` если использовать выражение`d = a && b && c` без вызова метода`Boolean( .. )`!
 
-So, if "falsy objects" are **not just objects wrapped around falsy values**, what the heck are they?
+Так, если "falsy objects" не являются **объектами оберткми для falsy значений**, тогда что они вообще такое?
 
-The tricky part is that they can show up in your JS program, but they're not actually part of JavaScript itself.
+Хитрость в том, что они могут появиться в вашей JS программе, но они не являются частью JavaScript самого по себе.
 
-**What!?**
+**ЧЕГОО!?**
 
-There are certain cases where browsers have created their own sort of *exotic* values behavior, namely this idea of "falsy objects," on top of regular JS semantics.
+Есть несколько случаев, когда браузеры создают свои собственные *экзотические* значения, названные "falsy objects," помимо стандартных правил JS.
 
-A "falsy object" is a value that looks and acts like a normal object (properties, etc.), but when you coerce it to a `boolean`, it coerces to a `false` value.
+"falsy object" -- значение, которое выглядит и дествует как стандартный объект (свойства, и т.д.), но если привести его к `boolean`, получится значение `false`.
 
-**Why!?**
+**Почему!?**
 
-The most well-known case is `document.all`: an array-like (object) provided to your JS program *by the DOM* (not the JS engine itself), which exposes elements in your page to your JS program. It *used* to behave like a normal object--it would act truthy. But not anymore.
+Широко известный случай `document.all`: массиво-подобный (объект) предоставленный программе JS *из DOM* (не из движка JS), который показывает элементы со страницы в вашей JS программе. Это *должно* вести себя как обычный объект--он должен быть truthy. Но, не в этой жизни.
 
-`document.all` itself was never really "standard" and has long since been deprecated/abandoned.
+`document.all` сам по себе не является "стандартом" и довольно давно признан устаревшим/заброшенным.
 
-"Can't they just remove it, then?" Sorry, nice try. Wish they could. But there's far too many legacy JS code bases out there that rely on using it.
+"Может тогда его просто удалить?" Отличная попытка. Если бы. Слишком много старого JS кода с его применением.
 
-So, why make it act falsy? Because coercions of `document.all` to `boolean` (like in `if` statements) were almost always used as a means of detecting old, nonstandard IE.
+Так, что заставляет его вести себя как falsy? Поскольку мы приводим `document.all` к `boolean` (как при использовании `if`) это означает что мы используем какую нибудь старую версию IE.
 
-IE has long since come up to standards compliance, and in many cases is pushing the web forward as much or more than any other browser. But all that old `if (document.all) { /* it's IE */ }` code is still out there, and much of it is probably never going away. All this legacy code is still assuming it's running in decade-old IE, which just leads to bad browsing experience for IE users.
+IE долго шел к соблюдению всех стандартов, и во многих случаях двигал веб вперед, больше чем все остальные браузеры. Но пока вот этот `if (document.all) { /* это IE */ }` код все еще присутствует, и большая часть этого кода никуда не денется. Весь этот устаревший код полагает что мы работаем в старом IE, что ведет к неудобному использованию этого браузера поьзователями.
 
-So, we can't remove `document.all` completely, but IE doesn't want `if (document.all) { .. }` code to work anymore, so that users in modern IE get new, standards-compliant code logic.
+Так, мы не можем выпилить `document.all` полностью, но IE не хочетчтобы код `if (document.all) { .. }` продолжал работать,пользователи совремнного IE получат новое, соответствующее стндартам поведение.
 
-"What should we do?" **"I've got it! Let's bastardize the JS type system and pretend that `document.all` is falsy!"
+"Что же делать?" **"Ааа я понял! Давайте-ка пошлем подальше систему типов JS и притворимся, что `document.all` falsy!"**
 
 Ugh. That sucks. It's a crazy gotcha that most JS developers don't understand. But the alternative (doing nothing about the above no-win problems) sucks *just a little bit more*.
 
