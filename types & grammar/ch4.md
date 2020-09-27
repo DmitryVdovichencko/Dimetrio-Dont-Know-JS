@@ -323,9 +323,9 @@ Number( [ "abc" ] );	// NaN
 
 #### Объекты Falsy 
 
-Минуточку, заголовок этого раздела звучит противоречиво. Я буквально *только что сказал* что спецификация трактует ве объекты как truthy, верно? Вообще не должно быть такой вещи как "falsy object."
+Минуточку, заголовок этого раздела звучит противоречиво. Я буквально *только что сказал* что спецификация трактует все объекты как truthy, верно? Вообще не должно быть такой вещи как "falsy object."
 
-Что это вообще мжет означать?
+Что это вообще может означать?
 
 Вы можете поддаться искушению что это объект обертка (см Раздел 3) для falsy значения (таких как `""`, `0`или `false`). Не попадите в эту *ловушку*.
 
@@ -339,7 +339,7 @@ var b = new Number( 0 );
 var c = new String( "" );
 ```
 
-Мы знаем что все три значения являются объектами (см Раздел 3) обертками для очевидных falsy значений. Но как эти объекты поведут себя: как `true` или как `false`? Легко проверить:
+Мы знаем, что все три значения являются объектами (см Раздел 3) обертками для очевидных falsy значений. Но как эти объекты поведут себя: как `true` или как `false`? Легко проверить:
 
 ```js
 var d = Boolean( a && b && c );
@@ -371,21 +371,21 @@ d; // true
 
 Так, что заставляет его вести себя как falsy? Поскольку мы приводим `document.all` к `boolean` (как при использовании `if`) это означает что мы используем какую нибудь старую версию IE.
 
-IE долго шел к соблюдению всех стандартов, и во многих случаях двигал веб вперед, больше чем все остальные браузеры. Но пока вот этот `if (document.all) { /* это IE */ }` код все еще присутствует, и большая часть этого кода никуда не денется. Весь этот устаревший код полагает что мы работаем в старом IE, что ведет к неудобному использованию этого браузера поьзователями.
+IE долго шел к соблюдению всех стандартов, и во многих случаях двигал веб вперед, больше чем все остальные браузеры. Но пока вот этот `if (document.all) { /* это IE */ }` код все еще присутствует, и большая часть этого кода никуда не денется. Весь этот устаревший код полагает что мы работаем в старом IE, что ведет к неудобному использованию этого браузера пользователями.
 
 Так, мы не можем выпилить `document.all` полностью, но IE не хочетчтобы код `if (document.all) { .. }` продолжал работать,пользователи совремнного IE получат новое, соответствующее стндартам поведение.
 
 "Что же делать?" **"Ааа я понял! Давайте-ка пошлем подальше систему типов JS и притворимся, что `document.all` falsy!"**
 
-Ugh. That sucks. It's a crazy gotcha that most JS developers don't understand. But the alternative (doing nothing about the above no-win problems) sucks *just a little bit more*.
+Эхх. Это отстой. Получилась мозговыносящая ловушка, о которой не догадываются большинство JS разработчиков. Но альтернатива (ничего не делать не вариант) может быть *еще хуже*.
 
-So... that's what we've got: crazy, nonstandard "falsy objects" added to JavaScript by the browsers. Yay!
+Итак... Что мы иммем: странные, нестандартные "falsy объекты" добавлены в JavaScript браузерами. Уау!
 
-#### Truthy Values
+#### Истинные значения
 
-Back to the truthy list. What exactly are the truthy values? Remember: **a value is truthy if it's not on the falsy list.**
+Перейдем обратно, к списку истинных значений. Что именно будет истинным значением? Вспоминаем: **значение будет true если его нет в списке false.**
 
-Consider:
+Рассмотрим:
 
 ```js
 var a = "false";
@@ -397,11 +397,11 @@ var d = Boolean( a && b && c );
 d;
 ```
 
-What value do you expect `d` to have here? It's gotta be either `true` or `false`.
+Каким значением будет `d` ? Должно быть `true` или `false`.
 
-It's `true`. Why? Because despite the contents of those `string` values looking like falsy values, the `string` values themselves are all truthy, because `""` is the only `string` value on the falsy list.
+Будет `true`. Почему? Потому что несмотря на содержимое строки `string` которое выглядит как `false`, строки `string` сами по себе интерпритируются как `true`, т.к. только строка `""` является единственным значением в списке `false`.
 
-What about these?
+А как нассчет этого?
 
 ```js
 var a = [];				// empty array -- truthy or falsy?
@@ -413,9 +413,9 @@ var d = Boolean( a && b && c );
 d;
 ```
 
-Yep, you guessed it, `d` is still `true` here. Why? Same reason as before. Despite what it may seem like, `[]`, `{}`, and `function(){}` are *not* on the falsy list, and thus are truthy values.
+Даа, все верно, `d` все еще будет `true`. Почему? Те же причины, что прежде. Несмотря на то как это вглядит, `[]`, `{}`, и `function(){}`  *НЕ* в списке `false` а значит будут трактоваться как `true`.
 
-In other words, the truthy list is infinitely long. It's impossible to make such a list. You can only make a finite falsy list and consult *it*.
+Иначе говоря, список истинных значений практически бесконечный. Невозможно создать такой список.
 
 Take five minutes, write the falsy list on a post-it note for your computer monitor, or memorize it if you prefer. Either way, you'll easily be able to construct a virtual truthy list whenever you need it by simply asking if it's on the falsy list or not.
 
